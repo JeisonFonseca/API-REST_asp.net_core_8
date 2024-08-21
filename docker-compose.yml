@@ -1,0 +1,48 @@
+version: '3.4'
+
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    build: 
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - "8081:8080"
+      - "8182:8181"
+    networks:
+        - API
+
+  postgresql:
+    container_name: postgresql
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: temp
+      POSTGRES_DB: RedSocial
+
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - /c/DockerFiles/db-init.sql:/docker-entrypoint-initdb.d/init.sql  # Montar el script SQL
+    networks:
+        - API
+    ports:
+      - "5432:5432"
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    restart: always
+    depends_on:
+        - postgresql
+    ports:
+        - "8080:8080"
+    networks:
+        - API
+
+volumes:
+  db_data:
+
+networks:
+  API:
+    driver: bridge 
+

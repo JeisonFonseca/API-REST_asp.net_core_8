@@ -1,12 +1,22 @@
 using Microsoft.EntityFrameworkCore;
+using api.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// Obtener la cadena de conexión del archivo appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Configurar el DbContext para PostgreSQL
-//builder.Services.AddDbContext<YourDbContextName>(options =>
-  //  options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Registrar el contexto de base de datos con PostgreSQL
+builder.Services.AddDbContext<RedSocialContext>(options =>
+    options.UseNpgsql(connectionString));
+
+// Configurar Identity
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<RedSocialContext>()
+    .AddDefaultTokenProviders();
+
 
 
 builder.Services.AddControllers();

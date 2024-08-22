@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 
 namespace api.Models
 {
-    public partial class RedSocialContext : IdentityDbContext<IdentityUser>
+    public partial class RedSocialContext : DbContext
     {
         public RedSocialContext()
         {

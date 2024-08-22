@@ -1,5 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using api.Models;
+using api.Models.DTO;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,10 +18,12 @@ namespace api.Controllers
     {
 
         private readonly RedSocialContext _context;
+        private readonly IConfiguration configuration;
 
-        public UsersController(RedSocialContext context)
+        public UsersController(RedSocialContext context, IConfiguration configuration)
         {
             _context = context;
+            this.configuration = configuration;
         }
 
         // GET: api/<UsersController>
@@ -25,28 +34,53 @@ namespace api.Controllers
         }
 
         // GET api/<UsersController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [Authorize]
+        [HttpGet]
+        [Route("GetUser")]
+        public IActionResult GetUser(int id)
         {
-            return "value";
+            var user = _context.Users.FirstOrDefault(u => u.UserId == id);
+            if (user != null)
+            {
+                return Ok(user);
+            }
+            return NotFound();
         }
 
-        // POST api/<UsersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Route("Login")]
+        public IActionResult Login(LoginDTO loginDTO)
         {
+            var user = _context.Users.FirstOrDefault(x => x.Email == loginDTO.Email && x.PasswordHash == loginDTO.Password);
+            if (user != null)
+            {
+                var claims = new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, configuration["Jwt:Subject"]),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("UserId", user.UserId.ToString()),
+                    new Claim("Email", user.Email.ToString()),
+                };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+                var SignIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    configuration["Jwt:Issuer"],
+                    configuration["Jwt:Audience"],
+                    claims,
+                    expires: DateTime.UtcNow.AddMinutes(5),
+                    signingCredentials: SignIn
+                    );
+                string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
+                return Ok(new { token = tokenValue , User = user});
+
+            }
+
+            return NoContent();
         }
 
-        // PUT api/<UsersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
+
+
+    
 }

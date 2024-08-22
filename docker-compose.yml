@@ -10,7 +10,7 @@ services:
       #- "8081:8080"
       #- "8182:8181"
 
-      - "8383:80"
+      - "8485:8485"
     #environment:
     #  - ConnectionStrings__DefaultConnection= "Host=postgresql;Port=5432;Database=RedSocial;Username=postgres;Password=temp;Pooling=true;"
     networks:

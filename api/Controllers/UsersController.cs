@@ -46,7 +46,20 @@ namespace api.Controllers
             }
             return NotFound();
         }
+        [HttpPost]
+        [Route("signup")]
+        public async Task<ActionResult<bool>> Post(UserDTO user)
+        {
+            User userEntity = user.ToEntity();
 
+            userEntity.CreatedAt = DateTime.Now;
+            userEntity.UpdatedAt = userEntity.CreatedAt;
+
+            await _context.Users.AddAsync(userEntity);
+            await _context.SaveChangesAsync();
+            return Ok(true);
+        }
+        
         [HttpPost]
         [Route("Login")]
         public IActionResult Login(LoginDTO loginDTO)

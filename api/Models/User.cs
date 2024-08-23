@@ -28,6 +28,7 @@ namespace api.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string? ProfileImage { get; set; }
+        public Role Role { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Friendship> FriendshipFriends { get; set; }

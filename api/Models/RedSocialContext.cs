@@ -5,11 +5,16 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
+using Npgsql;
 
 namespace api.Models
 {
     public partial class RedSocialContext : DbContext
     {
+        static RedSocialContext()
+        {
+            NpgsqlConnection.GlobalTypeMapper.MapEnum<Role>("userrole", new RoleNameTranslator()); // Basado en https://github.com/npgsql/efcore.pg/issues/2557#issuecomment-1318998191
+        }
         public RedSocialContext()
         {
         }
@@ -191,6 +196,9 @@ namespace api.Models
 
                 entity.Property(e => e.UserId).HasColumnName("userId");
 
+                
+                entity.Property(e => e.Role).HasColumnName("role");
+                
                 entity.Property(e => e.Bio).HasColumnName("bio");
 
                 entity.Property(e => e.CreatedAt)

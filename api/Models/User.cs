@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
@@ -29,6 +30,10 @@ namespace api.Models
         public DateTime? UpdatedAt { get; set; }
         public string? ProfileImage { get; set; }
 
+        // Este es el campo que representará el rol
+        [Column("role")]
+        public UserRole Role { get; set; }
+
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Friendship> FriendshipFriends { get; set; }
         public virtual ICollection<Friendship> FriendshipUsers { get; set; }
@@ -36,5 +41,13 @@ namespace api.Models
         public virtual ICollection<Message> MessageSenders { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
         public virtual ICollection<Reaction> Reactions { get; set; }
+    }
+
+    // Enum para representar los roles
+    public enum UserRole
+    {
+        Administrador,
+        Editor,
+        Lector
     }
 }

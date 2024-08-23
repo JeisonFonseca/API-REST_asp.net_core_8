@@ -231,6 +231,13 @@ namespace api.Models
                 entity.Property(e => e.Username)
                     .HasMaxLength(50)
                     .HasColumnName("username");
+
+                entity.Property(e => e.Role)
+      .HasColumnName("role")
+      .HasConversion(
+          v => v.ToString(),       // De enum a string al guardar
+          v => (UserRole)Enum.Parse(typeof(UserRole), v) // De string a enum al leer
+      );
             });
 
             OnModelCreatingPartial(modelBuilder);

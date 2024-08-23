@@ -60,6 +60,7 @@ namespace api.Controllers
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim("UserId", user.UserId.ToString()),
                     new Claim("Email", user.Email.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString())
                 };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
@@ -78,6 +79,37 @@ namespace api.Controllers
 
             return NoContent();
         }
+
+
+        [Authorize(Policy = "AdministradorPolicy")]  // Solo los administradores pueden asignar roles
+        [HttpPost]
+        [Route("AssignRole")]
+        public IActionResult AssignRole([FromForm] int userId, [FromForm] string role)
+        {
+            // Agrega logs para depuración
+            Console.WriteLine($"Buscando usuario con ID: {userId}");
+
+            var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
+            if (user == null)
+            {
+                return NotFound("Usuario no encontrado");
+            }
+
+            // Convertir la cadena a enum UserRole
+            if (Enum.TryParse<UserRole>(role, out var userRole))
+            {
+                user.Role = userRole;
+                _context.SaveChanges();
+                return Ok(new { message = $"Rol {userRole} asignado correctamente al usuario {user.Username}" });
+            }
+            else
+            {
+                return BadRequest("Rol inválido.");
+            }
+
+ 
+        }
+
 
     }
 

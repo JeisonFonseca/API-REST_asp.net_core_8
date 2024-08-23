@@ -73,14 +73,53 @@ namespace api.Controllers
                     );
                 string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
                 return Ok(new { token = tokenValue , User = user});
-
             }
 
             return NoContent();
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id, UserDTO updatedUserDto)
+        {
+            User? existingUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
+            if (existingUser is null)
+            {
+                return NotFound();
+            }
+
+            User updatedUser = updatedUserDto.ToEntity();
+
+            existingUser.Bio = updatedUser.Bio;
+            existingUser.DateOfBirth = updatedUser.DateOfBirth;
+
+            existingUser.ProfileImage = updatedUser.ProfileImage;
+            existingUser.FirstName = updatedUser.FirstName;
+            existingUser.LastName = updatedUser.LastName;
+            existingUser.SecondLastName = updatedUser.SecondLastName;
+
+            existingUser.Email = updatedUser.Email;
+            existingUser.Username = updatedUser.Username;
+
+            existingUser.UpdatedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
+            if (user is null)
+            {
+                return NotFound();
+
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
     }
-
-
-    
 }

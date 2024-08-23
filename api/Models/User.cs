@@ -29,6 +29,7 @@ namespace api.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string? ProfileImage { get; set; }
+        public Role Role { get; set; }
 
         // Este es el campo que representará el rol
         [Column("role")]

@@ -12,7 +12,6 @@
 
         public DateTime DateOfBirth { get; set; }
         public string Bio { get; set; } = string.Empty;
-        public ICollection<PostDTO> Posts { get; set; } = new List<PostDTO>();
 
         public User ToEntity()
         {
@@ -29,7 +28,6 @@
                     DateOfBirth.Month,
                     DateOfBirth.Day),
                 Bio = Bio,
-                Posts = Posts.Select(p => p.ToEntity()).ToList()
             };
         }
     }

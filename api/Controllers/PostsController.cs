@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
+    /// <summary>
+    /// Controlador para gestionar las operaciones relacionadas con las publicaciones (posts).
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class PostsController : ControllerBase
@@ -19,6 +22,11 @@ namespace api.Controllers
             this.configuration = configuration;
         }
 
+        /// <summary>
+        /// Obtiene la lista de todas las publicaciones.
+        /// </summary>
+        /// <returns>Una colección de objetos Post.</returns>
+        /// <response code="200">Devuelve la lista de publicaciones.</response>
         // GET: api/<PostsController>
         [HttpGet]
         public IEnumerable<Post> Get()
@@ -26,6 +34,14 @@ namespace api.Controllers
             return _context.Posts.ToList();
         }
 
+
+        /// <summary>
+        /// Obtiene una publicación específica por su ID.
+        /// </summary>
+        /// <param name="id">El ID de la publicación.</param>
+        /// <returns>Un objeto Post si se encuentra; de lo contrario, un estado 404 Not Found.</returns>
+        /// <response code="200">Devuelve la publicación solicitada.</response>
+        /// <response code="404">Si la publicación no se encuentra.</response>
         // GET api/<PostsController>/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
@@ -37,6 +53,12 @@ namespace api.Controllers
                 return NotFound();
         }
 
+        /// <summary>
+        /// Crea una nueva publicación.
+        /// </summary>
+        /// <param name="postDTO">Los datos de la nueva publicación.</param>
+        /// <returns>Un estado 201 Created si la creación es exitosa.</returns>
+        /// <response code="201">Creación exitosa.</response>
         // POST api/<PostsController>
         [HttpPost]
         public IActionResult Post(PostDTO postDTO)
@@ -54,6 +76,14 @@ namespace api.Controllers
             return Created();
         }
 
+        /// <summary>
+        /// Actualiza una publicación existente.
+        /// </summary>
+        /// <param name="id">El ID de la publicación a actualizar.</param>
+        /// <param name="postDTO">Los datos actualizados de la publicación.</param>
+        /// <returns>Un estado 200 OK si la actualización es exitosa.</returns>
+        /// <response code="200">Actualización exitosa.</response>
+        /// <response code="404">Si la publicación no se encuentra.</response>
         // PUT api/<PostsController>/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] PostDTO postDTO)
@@ -72,6 +102,13 @@ namespace api.Controllers
                 return NotFound();
         }
 
+        /// <summary>
+        /// Elimina una publicación por su ID.
+        /// </summary>
+        /// <param name="id">El ID de la publicación a eliminar.</param>
+        /// <returns>Un estado 200 OK si la eliminación es exitosa.</returns>
+        /// <response code="200">Eliminación exitosa.</response>
+        /// <response code="404">Si la publicación no se encuentra.</response>
         // DELETE api/<PostsController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)

@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {
+    /// <summary>
+    /// Controlador para gestionar operaciones relacionadas con los usuarios.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -26,6 +29,14 @@ namespace api.Controllers
             this.configuration = configuration;
         }
 
+
+        /// <summary>
+        /// Obtiene un usuario específico por ID.
+        /// </summary>
+        /// <param name="id">El ID del usuario.</param>
+        /// <returns>Un objeto User si se encuentra; de lo contrario, un estado 404 Not Found.</returns>
+        /// <response code="200">Devuelve el usuario solicitado.</response>
+        /// <response code="404">Si el usuario no se encuentra.</response>
         // GET: api/<UsersController>
         [HttpGet]
         public IEnumerable<User> Get()
@@ -46,6 +57,13 @@ namespace api.Controllers
             }
             return NotFound();
         }
+
+        /// <summary>
+        /// Registra un nuevo usuario.
+        /// </summary>
+        /// <param name="user">Los datos del usuario a registrar.</param>
+        /// <returns>Un estado 200 OK si el registro es exitoso.</returns>
+        /// <response code="200">Registro exitoso.</response>
         [HttpPost]
         [Route("signup")]
         public async Task<ActionResult<bool>> Post(UserDTO user)
@@ -59,7 +77,14 @@ namespace api.Controllers
             await _context.SaveChangesAsync();
             return Ok(true);
         }
-        
+
+        /// <summary>
+        /// Autentica a un usuario y genera un token JWT.
+        /// </summary>
+        /// <param name="loginDTO">Las credenciales del usuario.</param>
+        /// <returns>Un token JWT si las credenciales son correctas; de lo contrario, un estado 204 No Content.</returns>
+        /// <response code="200">Autenticación exitosa.</response>
+        /// <response code="204">Si las credenciales son incorrectas.</response>
         [HttpPost]
         [Route("Login")]
         public IActionResult Login(LoginDTO loginDTO)
@@ -92,6 +117,14 @@ namespace api.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Actualiza los datos de un usuario existente.
+        /// </summary>
+        /// <param name="id">El ID del usuario a actualizar.</param>
+        /// <param name="updatedUserDto">Los nuevos datos del usuario.</param>
+        /// <returns>Un estado 200 OK si la actualización es exitosa.</returns>
+        /// <response code="200">Actualización exitosa.</response>
+        /// <response code="404">Si el usuario no se encuentra.</response>
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, UserDTO updatedUserDto)
         {
@@ -122,8 +155,14 @@ namespace api.Controllers
 
 
 
-
-            [HttpDelete("{id}")]
+        /// <summary>
+        /// Elimina un usuario por su ID.
+        /// </summary>
+        /// <param name="id">El ID del usuario a eliminar.</param>
+        /// <returns>Un estado 200 OK si la eliminación es exitosa.</returns>
+        /// <response code="200">Eliminación exitosa.</response>
+        /// <response code="404">Si el usuario no se encuentra.</response>
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             User? user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);

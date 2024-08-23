@@ -31,9 +31,6 @@ namespace api.Models
         public string? ProfileImage { get; set; }
         public Role Role { get; set; }
 
-        // Este es el campo que representará el rol
-        [Column("role")]
-        public UserRole Role { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Friendship> FriendshipFriends { get; set; }

@@ -156,7 +156,7 @@ namespace api.Controllers
             // Convertir la cadena a enum UserRole
             if (Enum.TryParse<UserRole>(role, out var userRole))
             {
-                user.Role = userRole;
+            //    user.Role = Role;
                 _context.SaveChanges();
                 return Ok(new { message = $"Rol {userRole} asignado correctamente al usuario {user.Username}" });
             }
